@@ -6,7 +6,7 @@
 //
 
 import Foundation
-let apiKey = "YOUR MOVIEDB API key"
+let apiKey = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwMzM1YjgzYmZkY2JhZTg4YWMxOWU5ZjczODgwODAxNyIsInN1YiI6IjVhOGRkNDRkYzNhMzY4MjY2NzAwM2Q5MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kWSZs5e_AtKjeWdJj5hmkC8MQ2CjBqHiID0vsXXgkWc"
 final class HttpUtility {
 
     static let shared: HttpUtility = HttpUtility()

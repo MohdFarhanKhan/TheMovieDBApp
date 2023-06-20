@@ -9,10 +9,20 @@ import Foundation
 class  ViewModel:ObservableObject{
    
     @Published var movieArray:[[String: String]]?
-   
+    var timer = Timer()
     func getMovies(){
         HttpUtility.shared.callMovieUrl {
-            self.movieArray = HttpUtility.shared.movieArray
+            
+            DispatchQueue.main.async {
+                self.movieArray = HttpUtility.shared.movieArray
+            }
+           
+            
+            if HttpUtility.shared.currentPage < HttpUtility.shared.totalPage{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10.5) {
+                    self.getMovies()
+                        }
+            }
         }
     }
     
