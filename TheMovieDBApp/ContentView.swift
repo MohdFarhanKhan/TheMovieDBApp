@@ -2,69 +2,68 @@
 //  ContentView.swift
 //  TheMovieDBApp
 //
-//  Created by Najran Emarah on 02/12/1444 AH.
+//  Created by Najran Emarah on 06/05/1445 AH.
 //
 
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var viewModel:ViewModel = ViewModel()
-   
-    var body: some View {
-        VStack {
-            Text("Movie List")
-            List {
-                if viewModel.movieArray?.count ?? 0 > 0{
-                    ForEach(viewModel.movieArray!, id: \.self) { item in
-                       
-                       
-                       
-                        VStack{
-                            Text("Overview->\(item["overview"]  ?? "")")
-                            
-                            Text("Backdrop path->\(item["backdrop_path"]  ?? "")")
-                            
-                            Text("Original language->\(item["original_language"]  ?? "")")
-                            
-                            Text("Original title->\(item["original_title"]  ?? "")")
-                            
-                            Text("Popularity->\(item["popularity"]  ?? "")")
-                            
-                            Text("Poster path->\(item["poster_path"]  ?? "")")
-                            
-                            Text("Release_date->\(item["release_date"]  ?? "")")
-                            
-                            Text("Title->\(item["title"]  ?? "")")
-                            
-                            Text("vote_average->\(item["vote_average"]  ?? "")")
-                            
-                            Text("vote_count->\(item["vote_count"]  ?? "")")
-                           
-                        }
-                        .background(.white)
-                        .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.gray, lineWidth: 2)
-                                )
-                        
-                       
-                           }
-                }
-               
-                   }
-            
-            
-        }
-        .padding()
-        .onAppear(){
-            viewModel.getMovies()
-        }
-    }
-    
-}
+  @State var title = "Home"
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    var body: some View {
+        TabView {
+            HomeView()
+                .tabItem {
+                    Label("Movies", image: "moviesIcon")
+                    
+                }
+            
+            FavoriteView()
+                .tabItem {
+                    Label("Favorites", image: "favoritesIcon")
+                }
+            
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: "person.fill")
+                }
+        }
     }
+    }
+/*
+    private func addItem() {
+        withAnimation {
+            let newItem = Item(context: viewContext)
+            newItem.timestamp = Date()
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+
+    private func deleteItems(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { items[$0] }.forEach(viewContext.delete)
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }*/
+
+
+
+#Preview {
+    ContentView()
 }
