@@ -104,6 +104,23 @@ func isFavorite(id: Int, completionHandler:@escaping(_ result: Bool)-> Void){
         completionHandler(movies)
       
     }
+    func clearAllWatchlistMovies(completionHandler:@escaping (_ result: Bool) -> ()){
+        let fetchRequest = NSFetchRequest<WatchListMovies>(entityName: "WatchListMovies")
+       
+        let result = try! PersistentStorage.shared.context.fetch(fetchRequest)
+        do{
+            for watchMovie in result{
+                try PersistentStorage.shared.context.delete(watchMovie)
+            }
+            try PersistentStorage.shared.context.save()
+            completionHandler(true)
+        }
+        
+        catch{
+            completionHandler(false)
+        }
+      
+    }
     func deleteMovie(movie: Movie,completionHandler:@escaping (_ result: Bool) -> ()){
         isFavorite(id: movie.id) { [self] result in
             if result == true{

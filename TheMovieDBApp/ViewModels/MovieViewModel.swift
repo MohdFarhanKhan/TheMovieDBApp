@@ -313,4 +313,9 @@ class MovieViewModel: ObservableObject {
         }
        
      }
+    func clearWatchlistMovies(){
+        MovieRepository.shared.clearAllWatchlistMovies { result in
+            self.getWatchlist()
+        }
+    }
 }

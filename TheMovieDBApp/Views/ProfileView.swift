@@ -77,10 +77,22 @@ struct ProfileView: View {
                 .fontWeight(.heavy)
                 .cornerRadius(10)
                 .frame( height: 300, alignment: .center)
+                ZStack{
+                    Text("Watchlist")
+                        .foregroundColor(.black)
+                        .fontWeight(.heavy)
+                        .padding()
+                    if  self.viewModel.watchlistMovies != nil, !self.viewModel.watchlistMovies!.isEmpty {
+                        HStack{
+                            Spacer()
+                            Button("Clear") {
+                                viewModel.clearWatchlistMovies()
+                            }
+                        }
+                    }
+                }
+                
                
-                Text("Watchlist")
-                    .foregroundColor(.black)
-                    .fontWeight(.heavy)
                 if  self.viewModel.watchlistMovies != nil, !self.viewModel.watchlistMovies!.isEmpty {
                     ScrollView {
                         LazyVGrid(columns: columns) {
