@@ -79,6 +79,31 @@ func isFavorite(id: Int, completionHandler:@escaping(_ result: Bool)-> Void){
 
         return result.first
     }
+    func getAllFavoriteMovie(completionHandler:@escaping (_ result: [Movie]?) -> ()){
+        let fetchRequest = NSFetchRequest<FavoriteMovies>(entityName: "FavoriteMovies")
+       
+
+        let result = try! PersistentStorage.shared.context.fetch(fetchRequest)
+        if result.count == 0 { completionHandler(nil)}
+        var movies = [Movie]()
+        for watchMovie in result{
+            movies.append(Movie(id: Int(watchMovie.id), isAdult: watchMovie.isAdult, posterPath: watchMovie.posterPath, title: watchMovie.title!, releaseDate: watchMovie.releaseDate, voteAverage: watchMovie.voteAverage, overview: watchMovie.overview!, voteCount: Int(watchMovie.voteCount), backdropPath: watchMovie.backdropPath, genreIDS: watchMovie.genreIDS!, originalLanguage: watchMovie.originalLanguage!, originalTitle: watchMovie.originalTitle!, popularity: watchMovie.popularity, isVideo: watchMovie.isVideo))
+        }
+        completionHandler(movies)
+       
+    }
+    func getAllWatchlistMovies(completionHandler:@escaping (_ result: [Movie]?) -> ()){
+        let fetchRequest = NSFetchRequest<WatchListMovies>(entityName: "WatchListMovies")
+       
+        let result = try! PersistentStorage.shared.context.fetch(fetchRequest)
+        if result.count == 0 { completionHandler(nil)}
+        var movies = [Movie]()
+        for watchMovie in result{
+            movies.append(Movie(id: Int(watchMovie.id), isAdult: watchMovie.isAdult, posterPath: watchMovie.posterPath, title: watchMovie.title!, releaseDate: watchMovie.releaseDate, voteAverage: watchMovie.voteAverage, overview: watchMovie.overview!, voteCount: Int(watchMovie.voteCount), backdropPath: watchMovie.backdropPath, genreIDS: watchMovie.genreIDS!, originalLanguage: watchMovie.originalLanguage!, originalTitle: watchMovie.originalTitle!, popularity: watchMovie.popularity, isVideo: watchMovie.isVideo))
+        }
+        completionHandler(movies)
+      
+    }
     func deleteMovie(movie: Movie,completionHandler:@escaping (_ result: Bool) -> ()){
         isFavorite(id: movie.id) { [self] result in
             if result == true{

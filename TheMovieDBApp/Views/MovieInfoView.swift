@@ -90,7 +90,7 @@ struct MovieInfoView: View {
                     }
                 }
             }
-            .alert("Choose to watvh the video", isPresented: $isVideoAlter) {
+            .alert("Choose to watch the video", isPresented: $isVideoAlter) {
                 Button("OK", role: .cancel) { }
                 ForEach(array, id:\.self){link in
                  

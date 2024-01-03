@@ -8,10 +8,10 @@
 import Foundation
 
 struct ProfileStructure{
-    let name: String
-    let age: Int
-    let genre: String
-    let movie: String
+    var name: String
+    var age: Int
+    var genre: String
+    var movie: String
 }
 struct Movie: Decodable {
  let id: Int!

@@ -9,12 +9,16 @@ import Foundation
 import Combine
 class MovieViewModel: ObservableObject {
     @Published   var movies: [APIResults] = []
-    @Published var profileStructure: ProfileStructure?
+    @Published   var watchlistMovies: [Movie]?
+    @Published var isAddToWatchList = false
+    @Published var profileStructure: ProfileStructure = ProfileStructure(name: "", age: 0, genre: "", movie: "")
     @Published var error : MovieError?
     @Published var movieSaveStatus = ""
     @Published var searhText = ""
     @Published var isLoading = false
+    @Published var regionArray:[Regions] = []
     var cancellable: AnyCancellable?
+    
      init() {
          cancellable = $searhText
              .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
@@ -26,9 +30,35 @@ class MovieViewModel: ObservableObject {
                 
              })
      }
-  
-    
-   
+    func getSelectedRegion()->Regions?{
+        var savedRegion : Regions?
+       
+        let defaults = UserDefaults.standard
+        if let savedRgn = defaults.object(forKey: "SavedRegion") as? Data {
+            let decoder = JSONDecoder()
+            if let loadedRegion = try? decoder.decode(Regions.self, from: savedRgn) {
+                savedRegion = loadedRegion
+            }
+        }
+        return savedRegion
+    }
+    func setSelectedRegion(region: Regions){
+       
+        let defaults = UserDefaults.standard
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(region) {
+           
+            defaults.set(encoded, forKey: "SavedRegion")
+        }
+    }
+    func getRegions(){
+        HttpUtility.shared.getRegions( ) { [self] result in
+            if result!.count >  0{
+                self.regionArray = result!
+                
+            }
+        }
+    }
     func popularMovies( ) {
         self.movies.removeAll()
          error = nil
@@ -38,9 +68,13 @@ class MovieViewModel: ObservableObject {
              switch result{
              case .success(let response):
                  if !response.results.isEmpty {
+                     DispatchQueue.main.async { 
+                         self.movies.append(response)
+                     }
+
                     
-                     self.movies.append(response)
                      self.error = nil
+                     self.isAddToWatchList = true
                      
                  }
                  else{
@@ -63,9 +97,11 @@ class MovieViewModel: ObservableObject {
              case .success(let response):
                  if !response.results.isEmpty {
                     
-                     self.movies.append(response)
+                     DispatchQueue.main.async {
+                         self.movies.append(response)
+                     }
                      self.error = nil
-                    
+                     self.isAddToWatchList = true
                  }
                  else{
                      self.error = .noData
@@ -87,9 +123,11 @@ class MovieViewModel: ObservableObject {
              case .success(let response):
                  if !response.results.isEmpty {
                     
-                     self.movies.append(response)
+                     DispatchQueue.main.async {
+                         self.movies.append(response)
+                     }
                      self.error = nil
-                    
+                     self.isAddToWatchList = true
                  }
                  else{
                      self.error = .noData
@@ -111,9 +149,11 @@ class MovieViewModel: ObservableObject {
              case .success(let response):
                  if !response.results.isEmpty {
                     
-                     self.movies.append(response)
+                     DispatchQueue.main.async {
+                         self.movies.append(response)
+                     }
                      self.error = nil
-                    
+                     self.isAddToWatchList = true
                  }
                  else{
                      self.error = .noData
@@ -141,9 +181,11 @@ class MovieViewModel: ObservableObject {
             case .success(let response):
                 if !response.results.isEmpty {
                     
-                    self.movies.append(response)
+                    DispatchQueue.main.async {
+                        self.movies.append(response)
+                    }
                     self.error = nil
-                    
+                    self.isAddToWatchList = true
                 }
                 else{
                     self.error = .noData
@@ -165,9 +207,11 @@ class MovieViewModel: ObservableObject {
              case .success(let response):
                  if !response.results.isEmpty {
                     
-                     self.movies.append(response)
+                     DispatchQueue.main.async {
+                         self.movies.append(response)
+                     }
                      self.error = nil
-                    
+                     self.isAddToWatchList = true
                  }
                  else{
                      self.error = .noData
@@ -189,9 +233,11 @@ class MovieViewModel: ObservableObject {
              case .success(let response):
                  if !response.results.isEmpty {
                     
-                     self.movies.append(response)
+                     DispatchQueue.main.async {
+                         self.movies.append(response)
+                     }
                      self.error = nil
-                   
+                     self.isAddToWatchList = true
                  }
                  else{
                      self.error = .noData
@@ -222,7 +268,13 @@ class MovieViewModel: ObservableObject {
      }
     func getUserProfileInfo() {
         MovieRepository.shared.getProfile { result in
-            self.profileStructure = result
+            if let profile = result{
+                self.profileStructure = profile
+            }
+            else{
+                self.profileStructure = ProfileStructure(name: "", age: 0, genre: "", movie: "")
+            }
+           
         }
     }
     func saveProfileInfo(profileInfo: ProfileStructure,completion:@escaping (_ result: String) -> () ) {
@@ -241,7 +293,7 @@ class MovieViewModel: ObservableObject {
        
      }
     func saveWatchlist(list: [Movie],completion:@escaping (_ result: String) -> () ) {
-      
+      isAddToWatchList = false
         MovieRepository.shared.saveWatchList(list: list) { result in
             if result == true{
                 completion("Watchlist successfully saved")
@@ -252,7 +304,13 @@ class MovieViewModel: ObservableObject {
            
         }
        
-        
+     }
+    func getWatchlist() {
+        MovieRepository.shared.getAllWatchlistMovies(){ [self] result in
+            watchlistMovies = result
+            
+           
+        }
        
      }
 }

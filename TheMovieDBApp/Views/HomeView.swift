@@ -70,10 +70,7 @@ struct MovieCell:View{
         .frame(width:self.movieSize.width, height: self.movieSize.height)
         .background(Color.black.opacity(0.8))
           .cornerRadius(15)
-          
           .contextMenu {
-             
-             
              
                  Button {
                      viewModel.saveToFavorite(movie: movie!) { result in
@@ -139,9 +136,11 @@ struct MovieCell:View{
 struct HomeView: View {
     //@State private var orientation = UIDeviceOrientation.unknown
     @ObservedObject var viewModel: MovieViewModel = MovieViewModel()
-    @State var isAddToWatchList = true
+   
     @State var columns: [GridItem] = []
     @State  var title = "Home"
+    @State var isWatchlistSavingAlert = false
+    @State var watchlistSavingStatus = ""
     var body: some View {
         NavigationView {
             VStack{
@@ -341,9 +340,12 @@ struct HomeView: View {
                                 
                             }
                             Button {
-                                
+                                viewModel.saveWatchlist(list: viewModel.movies[0].results) { result in
+                                    watchlistSavingStatus = result
+                                    isWatchlistSavingAlert = true
+                                }
                             } label: {
-                                if isAddToWatchList{
+                                if viewModel.isAddToWatchList{
                                     VStack{
                                         ZStack {
                                             Circle()
@@ -380,6 +382,10 @@ struct HomeView: View {
                 .cornerRadius(15)
                 
                 
+            }
+            .alert("Watchlist saving status", isPresented: $isWatchlistSavingAlert) {
+                Button(watchlistSavingStatus, role: .cancel) { }
+              
             }
             .background(.white)
             .onAppear(){
